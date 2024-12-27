@@ -17,7 +17,7 @@ T_CurrentUser = Annotated[User, Depends(get_current_user)]
 
 
 @router.post('/', status_code=HTTPStatus.CREATED, response_model=UserPublic)
-def create_user(user: UserSchema, session: T_Session):  # type: ignore
+def create_user(user: UserSchema, session: T_Session):
     db_user = session.scalar(
         select(User).where(
             (User.username == user.username) | (User.email == user.email)
@@ -63,7 +63,9 @@ def update_user(
     user: UserSchema,
 ):
     if current_user.id != user_id:
-        raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail='Not enought permission')
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enought permission'
+        )
 
     current_user.email = user.email
     current_user.username = user.username
@@ -78,7 +80,9 @@ def update_user(
 @router.delete('/{user_id}', status_code=HTTPStatus.OK, response_model=Message)
 def delete_user(session: T_Session, current_user: T_CurrentUser, user_id: int):
     if current_user.id != user_id:
-        raise HTTPException(status_code=HTTPStatus.FORBIDDEN, detail='Not enought permission')
+        raise HTTPException(
+            status_code=HTTPStatus.FORBIDDEN, detail='Not enought permission'
+        )
 
     session.delete(current_user)
     session.commit()

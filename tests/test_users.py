@@ -25,9 +25,9 @@ def test_create_user_username_already_exists(client, user):
     response = client.post(
         '/users/',
         json={
-            'username': 'Teste',
-            'email': 'testo@test.com',
-            'password': 'testtest',
+            'username': user.username,
+            'email': user.email,
+            'password': user.password,
         },
     )
 
@@ -40,7 +40,7 @@ def test_create_user_email_already_exists(client, user):
         '/users/',
         json={
             'username': 'Nome',
-            'email': 'teste@test.com',
+            'email': user.email,
             'password': 'testtest',
         },
     )
@@ -83,9 +83,9 @@ def test_update_users(client, user, token):
     }
 
 
-def test_update_users_not_found(client, user, token):
+def test_update_users_not_found(client, other_user, token):
     response = client.put(
-        f'/users/{user.id + 2}',
+        f'/users/{other_user.id}',
         headers={'Authorization': f'Bearer {token}'},
         json={
             'username': 'bob',
@@ -106,9 +106,9 @@ def test_delete_users(client, user, token):
     assert response.json() == {'message': 'User deleted'}
 
 
-def test_delete_users_not_found(client, user, token):
+def test_delete_users_not_found(client, other_user, token):
     response = client.delete(
-        f'/users/{user.id + 1}', headers={'Authorization': f'Bearer {token}'}
+        f'/users/{-1}', headers={'Authorization': f'Bearer {token}'}
     )
 
     assert response.status_code == HTTPStatus.FORBIDDEN

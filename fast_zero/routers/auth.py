@@ -10,6 +10,7 @@ from fast_zero.models import User
 from fast_zero.schemas import Token
 from fast_zero.security import (
     create_acess_token,
+    get_current_user,
     verify_password,
 )
 
@@ -30,3 +31,10 @@ def login_for_acess_token(session: T_Session, form_data: T_OAuthForm):
     acess_token = create_acess_token(data={'sub': user.email})
 
     return {'acess_token': acess_token, 'token_type': 'Bearer'}
+
+
+@router.post('/refresh_token', response_model=Token)
+def refresh_acess_token(user: User = Depends(get_current_user)):
+    new_acess_token = create_acess_token(data={'sub': user.email})
+
+    return {'acess_token': new_acess_token, 'token_type': 'bearer'}
