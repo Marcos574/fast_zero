@@ -35,5 +35,9 @@ class TodoSchema(BaseModel):
     state: TodoState
 
 
+class TokenData(BaseModel):
+    username: str | None = None
+
+
 class TodoPublic(TodoSchema):
     id: int
